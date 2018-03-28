@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.websocket.OnClose;
@@ -42,11 +41,11 @@ public class WebSocketEndpoint {
 	}*/
 	
 	@OnMessage
-	public void onMessage(ByteBuffer message, Session session) {
+	public void onMessage(String message, Session session) {
 		try {
 			for (Session oneSession : session.getOpenSessions()) {
 				if (oneSession.isOpen()) {
-				oneSession.getBasicRemote().sendBinary(message);
+				oneSession.getBasicRemote().sendText(message);
 				}
 			}
 		}
