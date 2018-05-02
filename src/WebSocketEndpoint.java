@@ -21,14 +21,6 @@ public class WebSocketEndpoint {
 	@OnClose
 	public void onClose(Session session) {
 		System.out.println("Session with id: "+ session.getId() +" has closed");
-		try {
-			for(Session oneSession : session.getOpenSessions()) {
-				if(oneSession.isOpen() && !oneSession.getId().equals(session.getId())) {
-					oneSession.getBasicRemote().sendBinary(ByteBuffer.allocate(5), true);
-				}
-			}
-		}
-		catch (IOException e) { e.printStackTrace(); }
 	}
 	
 	@OnError
@@ -37,14 +29,14 @@ public class WebSocketEndpoint {
 	}
 	
 	@OnMessage
-	public void onMessage(ByteBuffer message, Boolean isLast, Session session) {
+	public void onMessage(ByteBuffer message, Session session) {
 		try {
 			for(Session oneSession : session.getOpenSessions()) {
 				if(oneSession.isOpen() && !oneSession.getId().equals(session.getId())) {
-					oneSession.getBasicRemote().sendBinary(message, isLast);					
+					oneSession.getBasicRemote().sendBinary(message);			
 				}
 			}
-			System.out.println("Binary last: "+isLast+" from session with id: "+session.getId());
+			//System.out.println("Binary last: "+isLast+" from session with id: "+session.getId());
 		}
 		catch (IOException e) { e.printStackTrace(); }
 	}
